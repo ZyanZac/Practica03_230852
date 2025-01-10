@@ -14,9 +14,9 @@ app.use(session({
 app.use((req, res, next)=>{
     if(req.session) {
         if (!req.session.createAt) {
-            req.session.createAt = new Date(); //Asignamos la fecha de creación de la sesión
+            req.session.createAt = new Date().toISOString(); //Asignamos la fecha de creación de la sesión
         }
-        req.session.lastAccess = new Date(); //Asignamos la última vez que se accedió a la sesión
+        req.session.lastAccess = new Date().toISOString(); //Asignamos la última vez que se accedió a la sesión
     }
     next();
 });
@@ -25,9 +25,9 @@ app.use((req, res, next)=>{
 app.get('/session', (req, res) => {
     if(req.session) {
         const sessionId = req.session.id;
-        const createAt = req.session.createAt;
-        const lastAccess = req.session.lastAccess;
-        const sessionDuration = (new Date() - createAt) / 1000; //Duración de la sesión en segundos
+        const createAt = new Date(req.session.createAt);
+        const lastAccess = new Date(req.session.lastAccess);
+        const sessionDuration = Math.floor((new Date() - createAt) / 1000); //Duración de la sesión en segundos
 
         res.send(`
             <h1>Detalles de la sesión</h1>
