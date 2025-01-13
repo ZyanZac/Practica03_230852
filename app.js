@@ -23,7 +23,7 @@ app.use((req, res, next)=>{
 
 //Ruta para mostrar la información de la sesión
 app.get('/session', (req, res) => {
-    if(req.session) {
+    if(req.session && req.session.isLoggedIn) {
         const sessionId = req.session.id;
         const createAt = new Date(req.session.createAt);
         const lastAccess = new Date(req.session.lastAccess);
@@ -48,9 +48,34 @@ app.get('/logout', (req, res)=> {
         if(err) {
             return res.send('Error al cerrar la sesión.');
         } 
-        res.send('<h1>Sesión cerrada exitosamente.</h1>')
+        res.send(`
+            <center>
+            <h1>Sesión cerrada exitosamente.</h1>
+            </center>
+            `);
     })
 })
+
+
+//Ruta para iniciar sesión
+app.get('/login', (req, res) => {
+    if (!req.session.isLoggedIn) {
+        req.session.isLoggedIn = true;
+        req.session.createAt = new Date().toISOString();
+        res.send(`<center>
+            <h1>Bienvenida, Zyanya</h1>
+            <p>Has iniciado sesión exitosamente.</p>
+            </center>
+            `);
+    } else {
+        res.send(`
+            <center>
+            <h1>Hola, Zyanya</h1>
+            <p>Ya has iniciado sesión anteriormente.</p>
+            </center>
+            `);
+    }
+});
 
 
 //Iniciar el servidor en el puerto 3000
